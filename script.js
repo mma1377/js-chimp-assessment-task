@@ -55,6 +55,29 @@ function get_dominant_color(imageDataClamped) {
     return res;
 }
 
+
+function is_happy_color(red, green, blue) {
+    let yellow_ratio_threshold = 0.65;
+    let saturation_threshold = 0.5;
+    let brightness_threshold = 0.5;
+    let yellow_brightness_threshold = 0.3;
+    let total_color = red + green + blue;
+    let yellow_ratio = (red + green) / total_color;
+    let min_color = red;
+    if (min_color < green)
+        min_color = green;
+    if (min_color < blue)
+        min_color = blue;
+    let saturation = 1 - min_color / total_color;
+    let brightness = total_color / 3 / 255;
+    if (yellow_ratio > yellow_ratio_threshold && brightness > yellow_brightness_threshold)
+        return true;
+    if (saturation > saturation_threshold && brightness > brightness_threshold)
+        return true;
+    return false;
+}
+
+
 function verifyImage(imageFile) {
     if (imageFile) {
         if (imageFile.type.startsWith('image/')) {
@@ -84,7 +107,10 @@ function verifyImage(imageFile) {
                     }
                 }
 
-                console.log(get_dominant_color(imageDataClamped));
+                let dominant_color = get_dominant_color(imageDataClamped);
+
+                if (!is_happy_color(dominant_color[0], dominant_color[1], dominant_color[2]))
+                    alert("Not happy color");
 
             }
         }
